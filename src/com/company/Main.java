@@ -14,7 +14,7 @@ public class Main {
     {
 
         // write your code here
-        System.out.println(args.length);
+        //System.out.println(args.length);
         if (args.length < 3)
             System.out.println("please follow the correct command line arguments from readme");
         else {
