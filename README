@@ -1,0 +1,44 @@
+OUTPUT FORMAT
+Sample:"On the line-Number 57 Total Count in this line: 1 offsets on this lines are 0 
+On the line-Number 15475 Total Count in this line: 1 offsets on this lines are 0" 
+
+I have changed  the output format tried to make more relevant which help anybody to verify if book is open in vi or emac editor
+
+if there is a match than line-Number and offset on that line.
+
+and at end total count of matches
+
+Caution : Search is case senstive, while verifying answer against total count using search in doc please make sure that your search in doc is case insenstive or not
+In my case "they" has 613 matches but using command F it is 956 than figured by doc search is treating "they","They","THEY" as same.
+
+HOW TO RUN
+open run.sh 
+
+java com.company.Main <bookname with path under double quotes> <phrae under double quotes>  <number of thread> <want to enable log than put 1 else 0>
+
+SAMPLE:
+java com.company.Main "/Users/sharad.singh/Devp/SearchPhraseInTest/D. H. Lawrence - Sons And Lovers.txt" "About this time"  20 1
+
+open run.sh and edit at the line 4 accordingly
+I could have done the entire automation through command line argument but book as well pharase can have space
+but since double quotes got removed and code is treating them as seperate command line argument.Tried with sed and awk but for a while left...down with fever.
+
+After verifying ..please run again it with logEnabled it will depict the beautiful parallelization among threads It is just a show case of my code and work.Messages will give you proper idea how theads
+are woking on which line
+Follow the sample.
+
+CODING GUIDELINE:
+Given enough comments on code.
+Used simplest approach so no extra third party library/jar which will cause some exception after forking in different enviorment .
+
+
+ALGORITHM
+1)Created thread pool
+2)Started readig lines
+	if(line length is less than pattern length)
+		read next line
+	else
+		Submit that line to worker thread
+3)Collect the responses 
+4)Check the reposne if it has something valid as per search out put it
+
