@@ -12,6 +12,7 @@ public class Main {
     public static void main(String[] args)
 
     {
+
         // write your code here
         System.out.println(args.length);
         if (args.length < 3)
@@ -26,6 +27,9 @@ public class Main {
 
             //number of threads with the
             int numThreads = Integer.parseInt(args[2]);
+            int logEnabled = 0 ;
+            if(args.length==4 && args[3]!=null)
+                logEnabled = Integer.parseInt(args[3]);
             System.out.println("logs:" + text + " pattern:" + pattern + " NumberOfThreads:" + numThreads);
             try {
                 //Steaming buffer reader
@@ -48,11 +52,12 @@ public class Main {
                         continue;
                     }
                     //log statement which lines is going attach to the current instance of callable
-                    System.out.println("Current line submitting to thread: " + lineNumber);
+                    if(logEnabled>0)
+                        System.out.println("Current line submitting to thread: " + lineNumber);
 
                     MyCallable myCallable = new MyCallable();
                     //applying builder pattern to the Mycallable instance ,that's why i havent written getter and setter
-                    myCallable = myCallable.withLine(Line).withPattern(pattern).withLineNumber(lineNumber);
+                    myCallable = myCallable.withLine(Line).withPattern(pattern).withLineNumber(lineNumber).withLogEnabled(logEnabled);
 
                     //submitting this instance to thread pool ,available thread will pick this one
                     Future<FutureThreadResponse> result = executors.submit(myCallable);

@@ -12,6 +12,7 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     private String Line;
     private String Pattern;
     private Long lineNumber;
+    private Integer logEnabled ;
 
     //Using builder pattern
     public MyCallable withLine(String Line) {
@@ -27,6 +28,11 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     public MyCallable withLineNumber(Long lineNumber) {
         this.lineNumber = lineNumber;
         return this;
+    }
+
+    public MyCallable withLogEnabled(Integer logEnabled){
+        this.logEnabled = logEnabled ;
+        return this ;
     }
 
     //override the call method of Callable interface
@@ -59,7 +65,8 @@ public class MyCallable implements Callable<FutureThreadResponse> {
                 withLineOffSet(lineOffset).withTotalCount(count);
 
         //log statement of thread's finding here are the details of multiple thread and their output
-        System.out.println(Thread.currentThread() + "log: " + lineNumber + " " + count);
+        if(logEnabled>0)
+            System.out.println(Thread.currentThread() + "log: " + lineNumber + " " + count);
 
         return threadResponse;
     }
