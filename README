@@ -1,3 +1,8 @@
+SYSTEM REQUIREMENT:
+Must have jdk and jre above 1.6
+Operating system has to be Unix platform only(Mac,linux,etc).
+Support of Multithreading in the operating system.
+
 OUTPUT FORMAT
 Sample:"On the line-Number 57 Total Count in this line: 1 offsets on this lines are 0 
 On the line-Number 15475 Total Count in this line: 1 offsets on this lines are 0" 
@@ -9,7 +14,7 @@ if there is a match than line-Number and offset on that line.
 and at end total count of matches
 
 Caution : Search is case senstive, while verifying answer against total count using search in doc please make sure that your search in doc is case insenstive or not
-In my case "they" has 613 matches but using command F it is 956 than figured by doc search is treating "they","They","THEY" as same.
+In my case "they" has 613 matches but using "command F" it is showing 956 than i figured out that  doc search is treating "they","They","THEY" as same.
 
 HOW TO RUN
 open run.sh 
@@ -21,11 +26,10 @@ java com.company.Main "/Users/sharad.singh/Devp/SearchPhraseInTest/D. H. Lawrenc
 
 open run.sh and edit at the line 4 accordingly
 I could have done the entire automation through command line argument but book as well pharase can have space
-but since double quotes got removed and code is treating them as seperate command line argument.Tried with sed and awk but for a while left...down with fever.
+but since double quotes got removed in shell script and code is treating them as seperate command line argument.Tried with sed and awk but for a while left...down with fever.
 
-After verifying ..please run again it with logEnabled it will depict the beautiful parallelization among threads It is just a show case of my code and work.Messages will give you proper idea how theads
-are woking on which line
-Follow the sample.
+After verifying ..please run again it with logEnabled means put it's value 1. It will depict the beautiful parallelization among threads It is just a show case of my code and work.Messages will give you proper idea how theads are woking on which line
+Follow the sample mentioned above.
 
 CODING GUIDELINE:
 Given enough comments on code.
