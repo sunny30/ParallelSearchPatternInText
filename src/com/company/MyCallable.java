@@ -59,10 +59,11 @@ public class MyCallable implements Callable<FutureThreadResponse> {
         }
 
         FutureThreadResponse threadResponse = new FutureThreadResponse();
+        threadResponse = threadResponse.withTotalCount(count) ;
 
         //Builder pattern for threadResponse object of FutureThreadResponse class
-        threadResponse = threadResponse.withFound(found).withLineNumber(lineNumber).
-                withLineOffSet(lineOffset).withTotalCount(count);
+       // threadResponse = threadResponse.withFound(found).withLineNumber(lineNumber).
+       //         withLineOffSet(lineOffset).withTotalCount(count);
 
         //log statement of thread's finding here are the details of multiple thread and their output
         if(logEnabled>0)
