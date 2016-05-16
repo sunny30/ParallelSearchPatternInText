@@ -65,6 +65,7 @@ public class Main {
                         System.out.println("Current line submitting to thread: " + lineNumber);
 
                     if (Line != null) {
+
                         MyCallable myCallable = new MyCallable();
                         //applying builder pattern to the Mycallable instance ,that's why i havent written getter and setter
                         myCallable = myCallable.withLine(Line).withPattern(pattern).withLineNumber(lineNumber).withLogEnabled(logEnabled);
@@ -78,6 +79,7 @@ public class Main {
                         for (int i = 0; i < threadCounter; i++) {
                             executors.execute(futureTaskArrayList.get(i));
                         }
+
                         boolean allDone = false;
                         while (allDone == false && threadCounter>0) {
 
