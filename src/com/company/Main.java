@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args)
 
     {
-
+        int len = 1000 ;
         // write your code here
         //System.out.println(args.length);
         if (args.length < 3)
@@ -30,7 +30,7 @@ public class Main {
             int logEnabled = 0 ;
             if(args.length==4 && args[3]!=null)
                 logEnabled = Integer.parseInt(args[3]);
-            System.out.println("logs:" + text + " pattern:" + pattern + " NumberOfThreads:" + numThreads);
+           // System.out.println("logs:" + text + " pattern:" + pattern + " NumberOfThreads:" + numThreads);
             try {
                 //Steaming buffer reader
                 BufferedReader br = new BufferedReader(new FileReader(text));
@@ -43,8 +43,15 @@ public class Main {
                 //Creating arraylist of all the responses from callable interface
                 ArrayList<Future<FutureThreadResponse>> futureArrayList = new ArrayList<Future<FutureThreadResponse>>();
 
+
                 while ((Line = br.readLine()) != null) {
                     ++lineNumber;
+
+                    if(Line !=null){
+                        String tempLine ;
+                        while (((tempLine = br.readLine())!=null) && Line.length()<len)
+                            Line += tempLine ;
+                    }
 
                     //waste of resource if we are assigning line to threads in which patterns can never exist .
                     if (Line.length() < pattern.length()) {
@@ -59,6 +66,7 @@ public class Main {
                     //applying builder pattern to the Mycallable instance ,that's why i havent written getter and setter
                     myCallable = myCallable.withLine(Line).withPattern(pattern).withLineNumber(lineNumber).withLogEnabled(logEnabled);
 
+
                     //submitting this instance to thread pool ,available thread will pick this one
                     Future<FutureThreadResponse> result = executors.submit(myCallable);
 
@@ -69,18 +77,19 @@ public class Main {
                 }
                 Long totalMatches = 0L;
                 for (Future<FutureThreadResponse> result : futureArrayList)
-                    if (result.get().getFound()) {
+                    totalMatches += (long) result.get().getTotalCount();
+                //    if (result.get().getFound()) {
 
                         //result.get() is the magic it will make wait all the thread to stop the out put since it got completed
                         //formatting log output ,preparing Command line output.
-                        totalMatches += (long) result.get().getTotalCount();
-                        System.out.print("On the line-Number " + result.get().getLineNumber() + " " + "Total Count in this line: " + result.get().getTotalCount() + " offsets on this lines are ");
-                        for (Integer offset : result.get().getLineOffsetList()) {
-                            System.out.print(offset + " ");
-                        }
+                  //      totalMatches += (long) result.get().getTotalCount();
+                    //    System.out.print("On the line-Number " + result.get().getLineNumber() + " " + "Total Count in this line: " + result.get().getTotalCount() + " offsets on this lines are ");
+                      //  for (Integer offset : result.get().getLineOffsetList()) {
+                        //    System.out.print(offset + " ");
+                        //}
 
-                        System.out.println();
-                    }
+//                        System.out.println();
+  //                  }
                 //total Number of matches
                 System.out.println(totalMatches);
                 //Shutting down all the resources to thread
