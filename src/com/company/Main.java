@@ -65,7 +65,7 @@ public class Main {
                 for (Future<FutureThreadResponse> result : futureArrayList) {
 
                     totalMatches += result.get().getTotalCount();
-                    
+
                 }
                 System.out.println(totalMatches);
 
