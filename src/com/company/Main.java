@@ -1,24 +1,71 @@
 package com.company;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
 
 public class Main {
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException, IOException
 
     {
-        int len = 1000 ;
+        long startTime = System.currentTimeMillis();
+        int len = 1024*1024;
         // write your code here
         //System.out.println(args.length);
-        if (args.length < 3)
-            System.out.println("please follow the correct command line arguments from readme");
-        else {
+        try {
+            if (args.length < 3)
+                System.out.println("please follow the correct command line arguments from readme");
+            else {
 
+                File file = new File(args[0]);
+                String pattern = args[1];
+                Integer logEnabled = Integer.parseInt(args[3]);
+
+                RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+                long fileLength = randomAccessFile.length();
+                System.out.println(randomAccessFile.length());
+                int numThreads = Integer.parseInt(args[2]);
+                long perThreads = fileLength / numThreads;
+                int sizeOfByte = 0;
+                if (perThreads > len) {
+                    sizeOfByte = len;
+                } else {
+                    sizeOfByte = (int) perThreads;
+                }
+                perThreads = Math.min(len, perThreads);
+                ExecutorService executors = Executors.newFixedThreadPool(numThreads);
+                ArrayList<Future<FutureThreadResponse>> futureArrayList = new ArrayList<Future<FutureThreadResponse>>();
+
+                for (long i = 0; i < fileLength; i += perThreads) {
+                    MyCallable myCallable = new MyCallable();
+                    if (i + perThreads >= fileLength) {
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize((int) (fileLength-i)).withLogEnabled(logEnabled);
+                        Future<FutureThreadResponse> result = executors.submit(myCallable);
+                        futureArrayList.add(result);
+                        break;
+                    } else
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize(sizeOfByte).withLogEnabled(logEnabled);
+                    Future<FutureThreadResponse> result = executors.submit(myCallable);
+                    futureArrayList.add(result);
+                }
+                int totalMatches = 0;
+                for (Future<FutureThreadResponse> result : futureArrayList) {
+                    //if (result.isDone()==true) {
+                        totalMatches += result.get().getTotalCount();
+                    //}
+                }
+                System.out.println(totalMatches);
+
+                executors.shutdown();
+                long stopTime = System.currentTimeMillis();
+                long elapsedTime = stopTime - startTime;
+
+                System.out.println("Time taken by program is :"+elapsedTime+"millisseconds");
+
+            }
+/*
             //book name with full path
             String text = args[0];
 
@@ -93,14 +140,14 @@ public class Main {
                 //total Number of matches
                 System.out.println(totalMatches);
                 //Shutting down all the resources to thread
-                executors.shutdown();
+                executors.shutdown();*/
 
-            } catch (IOException e) {
-                //Execption handling
-            } catch (Exception e) {
-                //General Exception handling
-            }
+        } catch (IOException e) {
+            //Execption handling
+        } catch (Exception e) {
+            //General Exception handling
         }
     }
-
 }
+
+//}

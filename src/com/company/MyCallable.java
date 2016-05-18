@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
@@ -13,7 +14,10 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     private String Pattern;
     private Long lineNumber;
     private Integer logEnabled ;
-
+    private Long startOffset ;
+    private Long endOffset ;
+    private RandomAccessFile randomAccessFile ;
+    public Integer size ;
     //Using builder pattern
     public MyCallable withLine(String Line) {
         this.Line = Line;
@@ -40,8 +44,13 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     public FutureThreadResponse call() throws Exception {
         int lastIndex = 0;
         int count = 0;
+        int len = (1<<31)-1 ;
+
+        byte [] b = new byte[size]  ;
+        randomAccessFile.seek(startOffset);
+        randomAccessFile.read(b,0,size) ;
+        Line = new String(b,"UTF-8") ;
         //offset list with in line
-        ArrayList<Integer> lineOffset = new ArrayList<Integer>();
         boolean found = false;
 
         //POJO for find the instance of all Pattern in the line.
@@ -52,7 +61,7 @@ public class MyCallable implements Callable<FutureThreadResponse> {
             if (lastIndex != -1) {
                 count++;
                 found = true;
-                lineOffset.add(lastIndex);
+        //        lineOffset.add(lastIndex);
                 lastIndex += Pattern.length();
             }
 
@@ -61,8 +70,7 @@ public class MyCallable implements Callable<FutureThreadResponse> {
         FutureThreadResponse threadResponse = new FutureThreadResponse();
 
         //Builder pattern for threadResponse object of FutureThreadResponse class
-        threadResponse = threadResponse.withFound(found).withLineNumber(lineNumber).
-                withLineOffSet(lineOffset).withTotalCount(count);
+        threadResponse = threadResponse.withFound(found).withTotalCount(count);
 
         //log statement of thread's finding here are the details of multiple thread and their output
         if(logEnabled>0)
@@ -70,4 +78,24 @@ public class MyCallable implements Callable<FutureThreadResponse> {
 
         return threadResponse;
     }
+
+    public MyCallable withStartOffset(Long startOffset){
+        this.startOffset = startOffset ;
+        return this ;
+    }
+
+    public MyCallable withEndOffset(Long endOffset){
+        this.endOffset = endOffset ;
+        return this ;
+    }
+    public MyCallable withRandomAccessFile(RandomAccessFile randomAccessFile){
+        this.randomAccessFile = randomAccessFile ;
+        return this ;
+    }
+
+    public MyCallable withSize(Integer size){
+        this.size = size;
+        return this ;
+    }
+
 }
