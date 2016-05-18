@@ -11,7 +11,7 @@ public class Main {
 
     {
         long startTime = System.currentTimeMillis();
-        int len = 1024*1024;
+        int len = 1024 * 1024;
         // write your code here
         //System.out.println(args.length);
         try {
@@ -37,24 +37,35 @@ public class Main {
                 perThreads = Math.min(len, perThreads);
                 ExecutorService executors = Executors.newFixedThreadPool(numThreads);
                 ArrayList<Future<FutureThreadResponse>> futureArrayList = new ArrayList<Future<FutureThreadResponse>>();
+                ArrayList<RandomAccessFile> accessFileArrayList = new ArrayList<RandomAccessFile>() ;
+                for (long i = 0; i < fileLength; i += perThreads) {
+
+                    if (i + perThreads >= fileLength) {
+
+                    }
+
+                }
 
                 for (long i = 0; i < fileLength; i += perThreads) {
                     MyCallable myCallable = new MyCallable();
+                    RandomAccessFile randomAccessFile1 = new RandomAccessFile(file, "rw");
                     if (i + perThreads >= fileLength) {
-                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize((int) (fileLength-i)).withLogEnabled(logEnabled);
+                        RandomAccessFile randomAccessFile2 = new RandomAccessFile(file, "rw");
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile2).withSize((int) (fileLength - i)).withLogEnabled(logEnabled);
                         Future<FutureThreadResponse> result = executors.submit(myCallable);
                         futureArrayList.add(result);
                         break;
                     } else
-                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize(sizeOfByte).withLogEnabled(logEnabled);
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile1).withSize(sizeOfByte).withLogEnabled(logEnabled);
                     Future<FutureThreadResponse> result = executors.submit(myCallable);
                     futureArrayList.add(result);
                 }
                 int totalMatches = 0;
+
                 for (Future<FutureThreadResponse> result : futureArrayList) {
-                    //if (result.isDone()==true) {
-                        totalMatches += result.get().getTotalCount();
-                    //}
+
+                    totalMatches += result.get().getTotalCount();
+                    
                 }
                 System.out.println(totalMatches);
 
@@ -62,7 +73,7 @@ public class Main {
                 long stopTime = System.currentTimeMillis();
                 long elapsedTime = stopTime - startTime;
 
-                System.out.println("Time taken by program is :"+elapsedTime+"millisseconds");
+                System.out.println("Time taken by program is :" + elapsedTime + "millisseconds");
 
             }
 /*
