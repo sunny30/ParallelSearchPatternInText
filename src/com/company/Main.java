@@ -25,7 +25,7 @@ public class Main {
 
                 RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
                 long fileLength = randomAccessFile.length();
-                System.out.println(randomAccessFile.length());
+        //        System.out.println(randomAccessFile.length());
                 int numThreads = Integer.parseInt(args[2]);
                 long perThreads = fileLength / numThreads;
                 int sizeOfByte = 0;
@@ -38,25 +38,18 @@ public class Main {
                 ExecutorService executors = Executors.newFixedThreadPool(numThreads);
                 ArrayList<Future<FutureThreadResponse>> futureArrayList = new ArrayList<Future<FutureThreadResponse>>();
                 ArrayList<RandomAccessFile> accessFileArrayList = new ArrayList<RandomAccessFile>() ;
-                for (long i = 0; i < fileLength; i += perThreads) {
-
-                    if (i + perThreads >= fileLength) {
-
-                    }
-
-                }
-
+        //        System.out.println(perThreads);
                 for (long i = 0; i < fileLength; i += perThreads) {
                     MyCallable myCallable = new MyCallable();
-                    RandomAccessFile randomAccessFile1 = new RandomAccessFile(file, "rw");
+                  //  RandomAccessFile randomAccessFile1 = new RandomAccessFile(file, "rw");
                     if (i + perThreads >= fileLength) {
-                        RandomAccessFile randomAccessFile2 = new RandomAccessFile(file, "rw");
-                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile2).withSize((int) (fileLength - i)).withLogEnabled(logEnabled);
-                        Future<FutureThreadResponse> result = executors.submit(myCallable);
+                        //RandomAccessFile randomAccessFile2 = new RandomAccessFile(file, "rw");
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize((int) (fileLength - i)).withLogEnabled(logEnabled);
+                        Future<FutureThreadResponse> result = executors.submit(myCallable) ;
                         futureArrayList.add(result);
                         break;
                     } else
-                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile1).withSize(sizeOfByte).withLogEnabled(logEnabled);
+                        myCallable = myCallable.withStartOffset(i).withPattern(pattern).withRandomAccessFile(randomAccessFile).withSize(sizeOfByte).withLogEnabled(logEnabled);
                     Future<FutureThreadResponse> result = executors.submit(myCallable);
                     futureArrayList.add(result);
                 }

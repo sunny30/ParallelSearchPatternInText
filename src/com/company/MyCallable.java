@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -44,12 +45,13 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     public FutureThreadResponse call() throws Exception {
         int lastIndex = 0;
         int count = 0;
-        int len = (1<<31)-1 ;
+
 
         byte [] b = new byte[size]  ;
-        randomAccessFile.seek(startOffset);
-        randomAccessFile.read(b,0,size) ;
-        Line = new String(b,"UTF-8") ;
+        Line = getLineFromRandomAccess(randomAccessFile,startOffset,size,b) ;
+        //randomAccessFile.seek(startOffset);
+        //randomAccessFile.read(b,0,size) ;
+        //Line = new String(b,"UTF-8") ;
         //offset list with in line
         boolean found = false;
 
@@ -96,6 +98,16 @@ public class MyCallable implements Callable<FutureThreadResponse> {
     public MyCallable withSize(Integer size){
         this.size = size;
         return this ;
+    }
+
+    public String getLineFromRandomAccess(RandomAccessFile randomAccessFile,long startOffset,Integer size,byte[] b)throws IOException{
+        String Line ;
+        synchronized (randomAccessFile){
+            randomAccessFile.seek(startOffset);
+            randomAccessFile.read(b,0,size) ;
+            Line = new String(b,"UTF-8") ;
+        }
+        return Line ;
     }
 
 }
